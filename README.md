@@ -1,2 +1,2 @@
 # Procedural_Generation
-Some messing around with Procedural Generation
+Some work I've done related to procedural generation for fun.
