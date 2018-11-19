@@ -5,15 +5,7 @@ import random as random
 import math
 import cv2
 from sklearn.preprocessing import normalize
-
-def mean(list):
-    return sum(list) / len(list)
-
-def display_image(win_name, image):
-    cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(win_name, 800, 800)
-    cv2.imshow(win_name, image)
-    cv2.waitKey(0)
+from general_functions import *
     
 class DiamondSquareMap():
     

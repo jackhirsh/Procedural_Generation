@@ -7,3 +7,6 @@ def display_image(win_name, image):
     cv2.resizeWindow(win_name, 800, 800)
     cv2.imshow(win_name, image)
     cv2.waitKey(0)
+    
+def mean(list):
+    return sum(list) / len(list)
