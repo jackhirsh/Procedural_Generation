@@ -70,10 +70,10 @@ class DiamondSquareMap():
         # Main case that contains the recursive calls
         else:
             # Perform the diamond and square steps on the current map
-            ds_map = self.diamond_step(ds_map, magnitude)
-            ds_map = self.square_step(ds_map, magnitude)
+            ds_map = self.diamond_step(ds_map, magnitude * 1.5)
+            ds_map = self.square_step(ds_map, magnitude * .1)
             size = size
-            sub_mag = magnitude * .56
+            sub_mag = magnitude * .5
             mid_point = (size // 2)
             
             
@@ -139,9 +139,15 @@ class DiamondSquareMap():
             (sw + mid + se) / 3 + (random.uniform(-magnitude, magnitude)),
             (se + mid + ne) / 3 + (random.uniform(-magnitude, magnitude))]
         
+        for c, val in enumerate(new_vals):
+            if val < 0:
+                val = 255 + val 
+            if val > 255:
+                val = val - 255
+        
         for iter, point in enumerate(coords):
             if ds_map[point[0]][point[1]] != 0:
-                ds_map[point[0]][point[1]] = (ds_map[point[0]][point[1]] + new_vals[iter]) / 2
+                ds_map[point[0]][point[1]] = (ds_map[point[0]][point[1]] * .95 + new_vals[iter] * .95) / 2
             else:
                 ds_map[point[0]][point[1]] = new_vals[iter]
         
@@ -155,44 +161,14 @@ class DiamondSquareMap():
         if type(self._output) is None:
             self.generate_map()
         return self._output
-    
-    def get_normalized_color_value(self, intensity, min_limit, max_limit):
-        '''
-        Gets the color value normalized in the given range
-        @param intensity: The intensity to interpret as a color value
-        @param min_limit: The minimum value for the intensities
-        @param max_limit: The maximum value for the intensities
-        @return: Returns the color value for the given intensity
-        '''
-        min_max_difference = max_limit - min_limit
-        intensity_cropped_by_max = np.where(intensity > max_limit, max_limit, intensity)
-        intensity_cropped_by_min = np.where(intensity_cropped_by_max < min_limit, min_limit, intensity_cropped_by_max)
-        intensity_cropped_zero_shifted = intensity_cropped_by_min - min_limit
-        intensity_normalized = intensity_cropped_zero_shifted * 255 / min_max_difference
-        return intensity_normalized.astype(np.uint8)
-        
-    def get_normalized(self, min_lim, max_lim):
-        '''
-        Gets the normalized output array
-        @param min_lim: The minimum value of the normalized range
-        @param max_lim: The maximum value of the normalized range
-        @return: Returns the normalized array
-        '''
-        out = self.get_output()
-        min = np.amin(out)
-        max = np.amax(out)
-        normalized = np.zeros_like(self._output, dtype=np.uint8)
-        normalized[0:,0:] = self.get_normalized_color_value(self._output[0:,0:], min, max)
-        return normalized
+
 if __name__ == '__main__':
-    sq_size = 129
+    sq_size = 513
     max_height = 255
     map_controller = DiamondSquareMap(sq_size, 0, max_height)
     map_controller.generate_map()
     map = map_controller.get_output()
+    map = map.astype(np.uint8)
     display_image("Unnormalized", map)
-    norm = map_controller.get_normalized(0, 255)
-    display_image("Normalized", norm)
-    print(map_controller._output)
     print()
     
